@@ -19,12 +19,13 @@
  * 			1. Location 1
  * 			2. Location 2
  * 			3. Location 3
+ *			4. Center
  * 
 */
 class Tile {
 private:
 	/*North*/
-	int sideN; //Values Possible 1 Field 2 Town 3 Field with Road 
+	int sideN;
 	
 	/*East*/
 	int sideE;
@@ -35,17 +36,24 @@ private:
 	/*West*/
 	int sideW;
 
-	int center; //Values 0. Empty, 1. Field, 2. House 3. CrossRoad 4. Church
-	//maybe create a side class but unnessary unless we want to 
+	/*Center*/
+	int center;
 	
-	bool farm; //Farm for the meatballs
+	bool farm; //Farm for the meaple
 	int shield; //If shield is present
 
 
 	//Meaple Locations
+	/*North*/
 	int meapleN;
-	int meapleS;
+	
+	/*East*/
 	int meapleE;
+
+	/*South*/
+	int meapleS;
+
+	/*West*/
 	int meapleW;
 
 public:
@@ -55,8 +63,8 @@ public:
 	Tile(int north, int east, int south, int west, int center, int shield);
 
 
-	void Rotate90(); //Roate the tile by 90 degrees anti-clockwise
-	void PlaceMeaple(string str);
+	int Rotate90(); //Roate the tile by 90 degrees anti-clockwise
+	int PlaceMeaple(string str); // place meaple on board
 
 	//Tile Side Values
 	int getN();
@@ -69,5 +77,8 @@ public:
 	int getMeapleS();
 	int getMeapleE();
 	int getMeapleW();
-
+	int getMeapleNW();
+	int getMeapleNE();
+	int getMeapleSW();
+	int getMeapleSE();
 };

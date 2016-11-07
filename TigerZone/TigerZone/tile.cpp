@@ -4,11 +4,6 @@ using namespace std;
 
 Tile::Tile()
 {
-	
-}
-
-Tile::~Tile()
-{
 	this->sideN = NULL;
 	this->sideE = NULL;
 	this->sideS = NULL;
@@ -18,6 +13,11 @@ Tile::~Tile()
 	
 	bool farm = NULL;
 	int shield = NULL;
+}
+
+Tile::~Tile()
+{
+	
 }
 
 Tile::Tile(int north, int east, int south, int west, int center, int shield)
@@ -32,7 +32,7 @@ Tile::Tile(int north, int east, int south, int west, int center, int shield)
 }
 
 
-void Tile::Rotate90(){
+int Tile::Rotate90(){
 	int temp = north;
 	this->north = east;
 	this->east = south;
@@ -43,9 +43,42 @@ void Tile::Rotate90(){
 
 //Place meaple
 
-void Tile::PlaceMeaple(string str)
+int Tile::PlaceMeaple(string str)
 {
-	//Someone put soemthing here
+	switch(str){
+		case "N":
+			meapleN = 2;
+			break;
+		case "S":
+			meapleS = 2;
+			break;
+		case "W":
+			meapleW = 2;
+			break;
+		case "E":
+			meapleE = 2;
+			break;
+		case "NE":
+			meapleN = 3;
+			meapleE = 1;
+			break;
+		case "NW":
+			meapleN = 1;
+			meapleW = 3;
+			break;
+		case "SE":
+			meapleS = 1;
+			meapleE = 3;
+			break;
+		case "SW":
+			meapleS = 3;
+			meapleW = 1;
+			break;
+		default:
+			return 1; // return false, input error
+			break;
+	}
+	return 0; // success
 }
 
 
@@ -58,25 +91,26 @@ void Tile::PlaceMeaple(string str)
  * 			3. Field with Road
  * */
 int Tile::getN() {
-		cout<<"North is ";
-		if(sideN == 0)
-		{
-			cout<<"Empty"<<endl;
-		}
-		else if (sideN ==  1)
-		{
-			cout<<"Field"<<endl;
-		}
-		else if (sideN == 2)
-		{
-			cout<<"Town"<<endl;
-		}
-		else if (sideN == 3)
-		{
-			cout<<"Field with Road"<<endl;
-		}
-		return sideN; 
+	cout<<"North is ";
+	if(sideN == 0)
+	{
+		cout<<"Empty"<<endl;
 	}
+	else if (sideN ==  1)
+	{
+		cout<<"Field"<<endl;
+	}
+	else if (sideN == 2)
+	{
+		cout<<"Town"<<endl;
+	}
+	else if (sideN == 3)
+	{
+		cout<<"Field with Road"<<endl;
+	}
+	return sideN; 
+}
+
 int Tile::getE() {
 	cout<<"East is ";
 	if(sideE == 0)
@@ -96,53 +130,59 @@ int Tile::getE() {
 		cout<<"Field with Road"<<endl;
 	}
 		return sideE;
-	}
+}
+
 int Tile::getS(){
-		cout<<"South is ";
-		if(sideS == 0)
-		{
-			cout<<"Empty"<<endl;
-		}
-		else if (sideS ==  1)
-		{
-			cout<<"Field"<<endl;
-		}
-		else if (sideS == 2)
-		{
-			cout<<"Town"<<endl;
-		}
-		else if (sideS == 3)
-		{
-			cout<<"Field with Road"<<endl;
-		}
-		return sideS;
+	cout<<"South is ";
+	if(sideS == 0)
+	{
+		cout<<"Empty"<<endl;
+	}
+	else if (sideS ==  1)
+	{
+		cout<<"Field"<<endl;
+	}
+	else if (sideS == 2)
+	{
+		cout<<"Town"<<endl;
+	}
+	else if (sideS == 3)
+	{
+		cout<<"Field with Road"<<endl;
+	}
+	return sideS;
 }
 
 int Tile::getW(){
-		cout<<"West is ";
-		if(sideW == 0)
-		{
-			cout<<"Empty"<<endl;
-		}
-		else if (sideW ==  1)
-		{
-			cout<<"Field"<<endl;
-		}
-		else if (sideW == 2)
-		{
-			cout<<"Town"<<endl;
-		}
-		else if (sideW == 3)
-		{
-			cout<<"Field with Road"<<endl;
-		}
-		return sideW;
+	cout<<"West is ";
+	if(sideW == 0)
+	{
+		cout<<"Empty"<<endl;
+	}
+	else if (sideW ==  1)
+	{
+		cout<<"Field"<<endl;
+	}
+	else if (sideW == 2)
+	{
+		cout<<"Town"<<endl;
+	}
+	else if (sideW == 3)
+	{
+		cout<<"Field with Road"<<endl;
+	}
+	return sideW;
 }
 
-	
-//End Tile side
-
-
+//Tile Meaple Values
+/* 
+ * Value for meapleX: 
+ * 			0. Empty
+ * 			1. left
+ * 			2. middle
+ * 			3. right
+ 			4. center
+ * */
 int Tile::getMeapleN()
 {
 	return meapleN;
@@ -158,4 +198,20 @@ int Tile::getMeapleE()
 int Tile::getMeapleW()
 {
 	return meapleW;
+}
+int Tile::getMeapleNE()
+{
+	return meapleNE;
+}
+int Tile::getMeapleNW()
+{
+	return meapleNW;
+}
+int Tile::getMeapleSE()
+{
+	return meapleSE;
+}
+int Tile::getMeapleSW()
+{
+	return meapleSW;
 }

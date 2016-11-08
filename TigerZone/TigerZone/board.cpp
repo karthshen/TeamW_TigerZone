@@ -1,6 +1,26 @@
 #include "Board.h"
 
 
+using namespace std;
+
+
+
+Board::Board()
+{
+	for(int i = 0; i<143;i++)
+	{
+		for (int j = 0; j<143; j++)
+		{
+			board[i][j] = NULL;
+		}
+	}
+}
+
+Board::~Board()
+{
+	delete board;
+	delete deck;
+}
 
 void Board::PlaceStartTile()
 {
@@ -8,16 +28,81 @@ void Board::PlaceStartTile()
 	//board[71][71] = startingTileType;
 }
 
-void Board::CheckTilePlacement(const Tile& tile, int xPos, int yPos)
+void Board::PlaceTile(int x, int y, int r)
+{
+	//Place the tile with x and y coordinate. R for the number
+}
+
+void Board::PlaceMeaple(); //
+{
+	
+}
+int Board::CheckTilePlacement(const Tile& tile, int xPos, int yPos)
 {
 	//used to verify tile placement (for initial testing)
 	//could also make a bool method
 	if(board[xPos][yPos] != null)
 	{
-		throw;
+		cout<<"Location already picked"<<endl;
+		return 0;
 	}
+	
 	//check if tile is adjacent to another
+	bool isAdjacent = false;
+	bool nAdjacent =false;
+	bool sAdjacent = false;
+	bool wAdjacent = false;
+	bool eAdjacent = false;
+	if(board[xPos-1][yPos]!=NULL)
+	{
+		isAdjacent = true;
+		wAdjacent = true;
+	}
+	if(board[xPos+1][yPos]!=NULL)
+	{
+		isAdjacent = true;
+		eAdjacent = true;
+	}
+	if(board[xPos][yPos+1]!=NULL)
+	{
+		isAdjacent = true;
+		nAdjacent = true;
+	}
+	if(board[xPos][yPos-1]!=NULL)
+	{
+		isAdjacent = true;
+		sAdjacent = true;
+	}
+	
+	if(!isAdjacent)
+		return 0;
 	//check if sides match up to adjacent sides
+	if(nAdjacent)
+	{
+		if(board[xPos][yPos+1]->sideS != tile->sideN)
+			return 0;
+	}
+	
+	if(sAdjacent)
+	{
+		if(board[xPos][yPos-1]->sideN != tile->sideS)
+			return 0;
+	}
+	
+	if(wAdjacent)
+	{
+		if(board[xPos-1][yPos]->sideE != tile->sideW)
+			return 0;
+	}
+	
+	if(eAdjacent)
+	{
+		if(board[xPos+1][yPos]->sideW != tile->sideE)
+			return 0;
+	}
+	
+	board[xPos][yPos] = tile;
+	return 1;
 }
 
 void Board::CheckMeeplePlacement(const Tile& tile, xPos, yPos, meepleSpot)
@@ -66,15 +151,6 @@ void Board::CheckSurroundedBuilding(xPos, yPos)
 
 
 
-Board::Board()
-{
-	Tile* board[143][143];
-}
-
-Board::~Board()
-{
-	
-}
 
 void Board::DisplayBoard()
 {
@@ -155,10 +231,17 @@ int Board::MakeDeck()
 
 	//shield: 1 = true, 0 = false	
 	
-	deck[1-3] 	= new tile(2,3,3,2,2,0);
+	deck[1] 	= new tile(2,3,3,2,2,0);
+	deck[2] 	= new tile(2,3,3,2,2,0);
+	deck[3] 	= new tile(2,3,3,2,2,0);
+	
 	deck[4] 	= new tile(2,2,1,2,2,1);
-	deck[5-7] 	= new tile(2,2,1,2,2,1);
-	deck[8-9] 	= new tile(2,1,1,2,2,1);
+	deck[5] 	= new tile(2,2,1,2,2,1);
+	deck[6] 	= new tile(2,2,1,2,2,1);
+	deck[7] 	= new tile(2,2,1,2,2,1);
+	
+	deck[8] 	= new tile(2,1,1,2,2,1);
+	deck[9] 	= new tile(2,1,1,2,2,1);
 	deck[10-12] 	= new tile(2,1,1,2,2,0);
 	deck[13-14] 	= new tile(2,3,3,2,2,1);
 	deck[15-23] 	= new tile(1,1,3,3,1,0);

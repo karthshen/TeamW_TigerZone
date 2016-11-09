@@ -125,10 +125,65 @@ void Board::CheckCompletedCity(xPos,yPos)
 	//return meeples and add to score of corresponding player
 }
 
-void Board::CheckCompletedRoad(xPos, yPos)
+bool Board::CheckCompletedRoad(xPos, yPos)
 {
+	Tile tile = board[xPos][yPos];
+	bool completed = false;
+	int points = 0;
+	
+	//position ints for the start and end of the road (for scoring)
+	int xEnd1 = -1;
+	int yEnd1 = -1;
+	int xEnd2 = -1;
+	int yEnd2 = -1;
+	
+	
 	//Call every time a tile is placed to see if a road is completed for
 	// scoring
+	
+	bool roadN = false;
+	bool roadS = false;
+	bool roadE = false;
+	bool roadW = false;
+	int roadCount = 0;
+	//Check for any roads on the tile
+	if(tile.getN() == 3)
+	{
+		roadN = true;
+		++roadCount;
+	}
+	if(tile.getS() == 3)
+	{
+		roadS = true;
+		++roadCount;
+	}
+	if(tile.getE() == 3)
+	{
+		roadE = true;
+		++roadCount;
+	}
+	if(tile.getW() == 3)
+	{
+		roadW = true;
+		++roadCount;
+	}
+	
+	//Check if center of tile is an end of the road
+	if(roadCount > 0 && tile.center != 0)
+	{
+		points++;
+		xEnd1 = xPos;
+		yEnd1 = yPos;
+		
+		if(roadcount == 1)
+		{
+			
+		}
+	}
+	
+	//need to recursively call a search method for the roads
+	
+	
 	
 	//DFS or BFS search of all connected terrains with a road
 	

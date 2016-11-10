@@ -40,7 +40,7 @@ private:
 	int center;
 	
 	bool farm; //Farm for the meaple
-	int shield; //If shield is present
+	int shield; // 0 if shield not present, 1 if present
 
 
 	//Meaple Locations

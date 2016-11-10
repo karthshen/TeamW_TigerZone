@@ -75,10 +75,10 @@ int Tile::PlaceMeaple(string str)
 			meapleW = 1;
 			break;
 		default:
-			return 1; // return false, input error
+			return 0; // return false, input error
 			break;
 	}
-	return 0; // success
+	return 1; // success
 }
 
 

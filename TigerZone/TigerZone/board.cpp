@@ -288,6 +288,7 @@ void Board::CheckCompletedRoad(xPos, yPos)
 				// and to return which player(s) recieve the points
 				
 				//Player.score += pointsN
+				//Player.returnMeeple
 			}
 			if(pointsS != 0)
 			{
@@ -328,15 +329,11 @@ void Board::CheckCompletedRoad(xPos, yPos)
 			if(points != 0)
 			{
 				//player.score += points
+				//player.ReturnMeeple?
+
 			}
 		}
 	}
-	
-	//need to recursively call a search method for the roads
-	
-	
-	
-	//DFS or BFS search of all connected terrains with a road
 	
 	//settle any meeple disputes (if there are meeples from multiple players,
 	// the player with more meeples on the road gets the points)

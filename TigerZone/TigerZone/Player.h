@@ -12,7 +12,7 @@ private:
 	
 	// places current tile at location specified by x,y with r rotations
 	void placeTile(const Tile& tile, int x, int y) {
-		Board::PlaceTile(tile x, y, r)
+		Board::PlaceTile(tile, x, y)
 	}
 	
 	void placeMeeple(meeple, board) {
@@ -21,6 +21,6 @@ private:
 
 public:
 	bool isHuman;
-	int	score;
+	int	score;	
 
 };

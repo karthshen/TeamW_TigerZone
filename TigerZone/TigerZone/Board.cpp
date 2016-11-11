@@ -1,43 +1,15 @@
 #include "Board.h"
+#include <queue>
 
-
-using namespace std;
-
-
-
-Board::Board()
-{
-	for(int i = 0; i<143;i++)
-	{
-		for (int j = 0; j<143; j++)
-		{
-			board[i][j] = NULL;
-		}
-	}
-}
-
-Board::~Board()
-{
-	delete board;
-	delete deck;
-}
-
-void Board::PlaceStartTile()
+// return value: 1=success
+int Board::PlaceStartTile()
 {
 	// place the starting tile in the middle of the board
-	//board[71][71] = startingTileType;
+	// start tile initialized in Board constructor
+	board[71][71] = startTile;
+	return 1;
 }
 
-void Board::PlaceTile(int x, int y, int r)
-{
-	//Place the tile with x and y coordinate. R for the number
-	// call CheckMeeplePLacement, CheckCompletedCity, and CheckCompletedRoad
-}
-
-void Board::PlaceMeaple(); //
-{
-	
-}
 int Board::CheckTilePlacement(const Tile& tile, int xPos, int yPos)
 {
 	//used to verify tile placement (for initial testing)
@@ -106,14 +78,237 @@ int Board::CheckTilePlacement(const Tile& tile, int xPos, int yPos)
 	return 1;
 }
 
-void Board::CheckMeeplePlacement(const Tile& tile, xPos, yPos, meepleSpot)
+
+
+struct coordinate{
+	int x;
+	int y;
+};
+
+// return value: 0=invalid meeple placement
+// 				 1=valid meeple placement
+int Board::CheckMeeplePlacement(int xPos, int yPos, String meepleSpot)
 {
-	//used to verify meeple placement (for initial testing)
-	//need a way to check all connected parts of tiles that are the same
-	// terrain as the proposed meepleSpot
+	// get the meeple placement
+	int meapleN = 0;
+	int meapleS = 0;
+	int meapleW = 0;
+	int meapleE = 0;
+	switch(meepleSpot){
+		case "N":
+			meapleN = 2;
+			break;
+		case "S":
+			meapleS = 2;
+			break;
+		case "W":
+			meapleW = 2;
+			break;
+		case "E":
+			meapleE = 2;
+			break;
+		case "NE":
+			meapleN = 3;
+			meapleE = 1;
+			break;
+		case "NW":
+			meapleN = 1;
+			meapleW = 3;
+			break;
+		case "SE":
+			meapleS = 1;
+			meapleE = 3;
+			break;
+		case "SW":
+			meapleS = 3;
+			meapleW = 1;
+			break;
+		default:
+			return 0; // return false, input error
+			break;
+	}
+
+	// starting tile
+	Tile* root = board[xPos][yPos];
+	// get the terrain type
+	int terrainType = 0;
+	if(meapleN != 0){
+		terrainType = root.sideN;
+	}
+	else if(meapleS != 0){
+		terrainType = root.sideS;
+	}
+	else if(meapleW != 0){
+		terrainType = root.sideW;
+	}
+	else if(meapleE != 0){
+		terrainType = root.sideE;
+	}
+
+	// queue of coordinates for BFS
+	queue<coordinate> Q;
+	
+	if(meapleN != 0 || (center == terrainType && root.sideN == terrainType)){
+		if(board[xPos][yPos+1] != NULL){
+			Tile* adjacent = board[xPos][yPos+1];
+			if(adjacent.sideS == terrainType){
+				if(adjacent.meapleS != 0){
+					return 0;
+				}
+				else{
+					struct coordinate c;
+					c.x = xPos;
+					c.y = yPos+1;
+					Q.push(c);
+				}
+			}
+		}
+	}
+	if(meapleS != 0 || (center == terrainType && root.sideS == terrainType)){
+		if(board[xPos][yPos-1] != NULL){
+			Tile* adjacent = board[xPos][yPos-1];
+			if(adjacent.sideN == terrainType){
+				if(adjacent.meapleN != 0){
+					return 0;
+				}
+				else{
+					struct coordinate c;
+					c.x = xPos;
+					c.y = yPos-1;
+					Q.push(c);
+				}
+			}
+		}
+	}
+	if(meapleW != 0 || (center == terrainType && root.sideW == terrainType)){
+		if(board[xPos-1][yPos] != NULL){
+			Tile* adjacent = board[xPos-1][yPos];
+			if(adjacent.sideE == terrainType){
+				if(adjacent.meapleE != 0){
+					return 0;
+				}
+				else{
+					struct coordinate c;
+					c.x = xPos-1;
+					c.y = yPos;
+					Q.push(c);
+				}
+			}
+		}
+	}
+	if(meapleE != 0 || (center == terrainType && root.sideE == terrainType)){
+		if(board[xPos+1][yPos] != NULL){
+			Tile* adjacent = board[xPos+1][yPos];
+			if(adjacent.sideW == terrainType){
+				if(adjacent.meapleW != 0){
+					return 0;
+				}
+				else{
+					struct coordinate c;
+					c.x = xPos+1;
+					c.y = yPos;
+					Q.push(c);
+				}
+			}
+		}
+	}
+
+	while(!Q.empty()){
+		struct coordinate c = Q.pop();
+		Tile* current = board[c.x][c.y];
+		// if the search cycles back to the root
+		if(current == root)
+			return 1;
+		if(current.center == terrainType){
+			if(current.sideN == terrainType){
+				if(current.meapleN != 0){
+					return 0;
+				}
+				if(board[xPos][yPos+1] != NULL){
+					Tile* adjacent = board[xPos][yPos+1];
+					else if(adjacent.sideS == terrainType){
+						if(adjacent.meapleS != 0){
+							return 0;
+						}
+						else{
+							struct coordinate c;
+							c.x = xPos;
+							c.y = yPos+1;
+							Q.push(c);
+						}
+					}
+				}
+			}
+			if(current.sideS == terrainType){
+				if(current.meapleS != 0){
+					return 0;
+				}
+				if(board[xPos][yPos-1] != NULL){
+					Tile* adjacent = board[xPos][yPos-1];
+					else if(adjacent.sideN == terrainType){
+						if(adjacent.meapleN != 0){
+							return 0;
+						}
+						else{
+							struct coordinate c;
+							c.x = xPos;
+							c.y = yPos-1;
+							Q.push(c);
+						}
+					}
+				}
+			}
+			if(current.sideW == terrainType){
+				if(current.meapleW != 0){
+					return 0;
+				}
+				if(board[xPos-1][yPos] != NULL){
+					Tile* adjacent = board[xPos-1][yPos];
+					else if(adjacent.sideE == terrainType){
+						if(adjacent.meapleE != 0){
+							return 0;
+						}
+						else{
+							struct coordinate c;
+							c.x = xPos-1;
+							c.y = yPos;
+							Q.push(c);
+						}
+					}
+				}
+			}
+			if(current.sideE == terrainType){
+				if(current.meapleE != 0){
+					return 0;
+				}
+				if(board[xPos+1][yPos] != NULL){
+					Tile* adjacent = board[xPos+1][yPos];
+					else if(adjacent.sideW == terrainType){
+						if(adjacent.meapleW != 0){
+							return 0;
+						}
+						else{
+							struct coordinate c;
+							c.x = xPos+1;
+							c.y = yPos;
+							Q.push(c);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	// if function has not returned by now, meeple may be placed
+	// place meeple
+	root.PlaceMeaple(meepleSpot);
+
+	return 1;
 }
 
-void Board::CheckCompletedCity(int xPos,int yPos)
+// return value: 0=no newly completed cities
+// 				 !0=number of points awarded for newly completed city
+int Board::CheckCompletedCity(xPos,yPos)
 {
 	//call every time a tile is placed to see if a city is completed for
 	// scoring
@@ -125,6 +320,7 @@ void Board::CheckCompletedCity(int xPos,int yPos)
 	
 	//return meeples and add to score of corresponding player
 }
+
 
 int Board::CountRoad(int xPrev, int yPrev, int xCurr, int yCurr, int xStart, int yStart)
 {
@@ -341,7 +537,9 @@ void Board::CheckCompletedRoad(int xPos, int yPos)
 	//return meeples and add to score for corresponding player
 }
 
-void Board::CheckSurroundedBuilding(int xPos, int yPos)
+// return value: 0=no newly completed dens
+// 				 !0=number of points awarded for newly completed dens
+int Board::CheckCompletedDen(xPos, yPos)
 {
 	//check if there are any buildings within one spot of the newly placed
 	// tile
@@ -352,28 +550,51 @@ void Board::CheckSurroundedBuilding(int xPos, int yPos)
 	// if so, return the meeple and add points for the owner of the meeple.
 }
 
+// constructor
+Board::Board()
+{
+	Tile* board[143][143];
+	this->board = board;
+	startTile = new Tile(2, 3, 1, 3, 3, 0);
+}
 
+// destructor
+Board::~Board()
+{
+	
+}
 
-
-void Board::DisplayBoard()
+int Board::DisplayBoard()
 {
 	//call to update the board in the UI whenever a change occurs
 	// such as tile or meeple placement
 }
 
-void Board::PlaceTile(const Tile& tile, int xPos, int yPos)
+// return value: 0=invalid tile placement
+// 				 1=successful tile placement
+int Board::PlaceTile(const Tile& tile, int xPos, int yPos)
 {
-	CheckTilePlacement(tile, xPos, yPos);
-	//board[x][y] = tile;
+	// if tile placement is illegal, return 0
+	if(CheckTilePlacement(tile, xPos, yPos)==0)
+		return 0;
+	// if tile placement is legal, place tile at position
+	board[xPos][yPos] = tile;
 	
-	CheckCompletedCity(xPos, yPos);
-	CheckCompletedRoad(xPos, yPos);
-	CheckSurroundedBuilding(xPos,yPos);
+	// check is city is completed
+	int pts = CheckCompletedCity(xPos, yPos);
+	if(pts != 0)
+		// add up points
+	// check if road is completed
+	pts = CheckCompletedDen(xPos,yPos);
+	if(pts != 0)
+		// add up points
+	return 1; // success
 }
+
 
 //function to show possible spots for a given tile
 // can be moved to AI class later
-void Board::CheckAvailibleSpots(const Tile& tile)
+int Board::CheckAvailibleSpots(const Tile& tile)
 {
 	//gather information about the sides of the tile
 	topSide = tile.topSide;
@@ -395,7 +616,7 @@ void Board::CheckAvailibleSpots(const Tile& tile)
 	
 }
 
-void Board::ShowAvailibleMeepleSpots()
+int Board::ShowAvailibleMeepleSpots()
 {
 	//want to return possible meeple places for after a tile is placed.
 	//This can be moved to the AI class later as well
@@ -434,36 +655,29 @@ int Board::MakeDeck()
 
 	//shield: 1 = true, 0 = false	
 	
-	deck[1] 	= new tile(2,3,3,2,2,0);
-	deck[2] 	= new tile(2,3,3,2,2,0);
-	deck[3] 	= new tile(2,3,3,2,2,0);
-	
-	deck[4] 	= new tile(2,2,1,2,2,1);
-	deck[5] 	= new tile(2,2,1,2,2,1);
-	deck[6] 	= new tile(2,2,1,2,2,1);
-	deck[7] 	= new tile(2,2,1,2,2,1);
-	
-	deck[8] 	= new tile(2,1,1,2,2,1);
-	deck[9] 	= new tile(2,1,1,2,2,1);
-	deck[10-12] 	= new tile(2,1,1,2,2,0);
-	deck[13-14] 	= new tile(2,3,3,2,2,1);
-	deck[15-23] 	= new tile(1,1,3,3,1,0);
-	deck[24-27] 	= new tile(1,3,3,3,3,0);
-	deck[28] 	= new tile(3,3,3,3,3,0);
-	deck[29-30] 	= new tile(2,2,3,2,2,1);
-	deck[31] 	= new tile(2,2,3,2,2,0);
-	deck[32-39] 	= new tile(1,3,1,3,1,0);
-	deck[40-42] 	= new tile(2,3,3,3,3,0);
-	deck[43] 	= new tile(2,2,2,2,2,1);
-	deck[44-47] 	= new tile(2,3,1,3,1,0);
-	deck[48-52] 	= new tile(2,1,1,1,1,0);
-	deck[53-54] 	= new tile(1,1,3,1,4,0);
-	deck[55-58] 	= new tile(1,1,1,1,4,0);
-	deck[59-60] 	= new tile(2,1,1,2,1,0);
-	deck[61-63] 	= new tile(2,3,3,1,1,0);
-	deck[64-66] 	= new tile(2,1,3,3,1,0);
-	deck[67-68] 	= new tile(1,2,2,1,2,1);
-	deck[69] 	= tile(1,2,2,1,2,0);
-	deck[70-72] 	= tile(1,2,2,1,1,0);
+	deck[1-3] 	= new Tile(2,3,3,2,2,0);
+	deck[4] 	= new Tile(2,2,1,2,2,1);
+	deck[5-7] 	= new Tile(2,2,1,2,2,1);
+	deck[8-9] 	= new Tile(2,1,1,2,2,1);
+	deck[10-12] 	= new Tile(2,1,1,2,2,0);
+	deck[13-14] 	= new Tile(2,3,3,2,2,1);
+	deck[15-23] 	= new Tile(1,1,3,3,1,0);
+	deck[24-27] 	= new Tile(1,3,3,3,3,0);
+	deck[28] 	= new Tile(3,3,3,3,3,0);
+	deck[29-30] 	= new Tile(2,2,3,2,2,1);
+	deck[31] 	= new Tile(2,2,3,2,2,0);
+	deck[32-39] 	= new Tile(1,3,1,3,1,0);
+	deck[40-42] 	= new Tile(2,3,3,3,3,0);
+	deck[43] 	= new Tile(2,2,2,2,2,1);
+	deck[44-47] 	= new Tile(2,3,1,3,1,0);
+	deck[48-52] 	= new Tile(2,1,1,1,1,0);
+	deck[53-54] 	= new Tile(1,1,3,1,4,0);
+	deck[55-58] 	= new Tile(1,1,1,1,4,0);
+	deck[59-60] 	= new Tile(2,1,1,2,1,0);
+	deck[61-63] 	= new Tile(2,3,3,1,1,0);
+	deck[64-66] 	= new Tile(2,1,3,3,1,0);
+	deck[67-68] 	= new Tile(1,2,2,1,2,1);
+	deck[69] 	= Tile(1,2,2,1,2,0);
+	deck[70-72] 	= Tile(1,2,2,1,1,0);
 }
 

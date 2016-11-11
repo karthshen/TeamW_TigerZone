@@ -17,7 +17,8 @@ private:
 	void CheckTilePlacement(const Tile& tile, int xPos, int yPos);
 	void CheckMeeplePlacement(const Tile& tile, xPos, yPos, meepleSpot);
 	void CheckCompletedCity(xPos,yPos);
-	bool CheckCompletedRoad(xPos, yPos);
+	void CheckCompletedRoad(xPos, yPos);
+	int CountRoad(xPrev, yPrev);
 	void CheckSurroundedBuilding(xPos, yPos);
 	
 	Tile deck[72];

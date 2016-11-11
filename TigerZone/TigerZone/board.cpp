@@ -31,6 +31,7 @@ void Board::PlaceStartTile()
 void Board::PlaceTile(int x, int y, int r)
 {
 	//Place the tile with x and y coordinate. R for the number
+	// call CheckMeeplePLacement, CheckCompletedCity, and CheckCompletedRoad
 }
 
 void Board::PlaceMeaple(); //
@@ -125,17 +126,95 @@ void Board::CheckCompletedCity(xPos,yPos)
 	//return meeples and add to score of corresponding player
 }
 
-bool Board::CheckCompletedRoad(xPos, yPos)
+int Board::CountRoad(xPrev, yPrev, xCurr, yCurr, xStart, yStart)
+{
+	if(board[xCurr][yCurr] == null)		//If no tile placed, road is not complete
+	{
+		return -1;
+	}
+	
+	if(xCurr == xStart && yCurr == yStart)	//If we are where we started
+	{
+		return 0;		//return 0 because we have finished a loop with no intersections
+	}					//point for this tile will be counted at first function call
+	
+	
+	// bool values for where the current tile is to relation of previous tile
+	bool left = false;
+	bool right = false;
+	bool up = false;
+	bool down = false;
+	
+	if(xPrev != xCurr)
+	{
+		if(xPrev > xCurr) //current tile is to the left of previous tile
+		{
+			left = true;
+		}
+		else right = true;
+	}
+	if(yPrev != yCurr)
+	{
+		if(yPrev > yCurr) //current tile is above previous tile
+		{
+			up = true;
+		}
+		else down = true;
+	}
+	
+	//We already know where the first part of the road is on the
+	// current tile which connects to the previous tile, so we check 
+	// where the next part of the road is or if it ends at this tile
+	if(board[xCurr][yCurr] != 0)	//tile is an end to the road
+	{
+		return 1;
+	}
+	else				//otherwise, find where the road continues
+	{
+		if(board[xCurr][yCurr].getN() == 3 && !down)	//don't want this road if previous tile is above
+		{
+			if(CountRoad(xCurr, yCurr, xCurr, yCurr-1, xStart, yStart) == -1)
+			{		//if road doesn't connect to a tile, then road is not complete
+				return -1;		//return -1 all the way back to the beginning function call
+			}
+			else return 1 + CountRoad(xCurr, yCurr, xCurr, yCurr-1, xStart, yStart);
+			
+		}
+		if(board[xCurr][yCurr].getS() == 3 && !up)
+		{
+			if(CountRoad(xCurr, yCurr, xCurr, yCurr+1, xStart, yStart) == -1
+			{
+				return -1;
+			}
+			else return 1 + CountRoad(xCurr, yCurr, xCurr, yCurr+1, xStart, yStart);
+		}
+		if(board[xCurr][yCurr].getE() == 3 && !left)
+		{
+			if(CountRoad(xCurr, yCurr, xCurr+, yCurr, xStart, yStart) == -1)
+			{
+				return -1;
+			}
+			else return 1 + CountRoad(xCurr, yCurr, xCurr+, yCurr, xStart, yStart);
+		}
+		if(board[xCurr][yCurr].getW() == 3 && !right)
+		{
+			if(CountRoad(xCurr, yCurr, xCurr-1, yCurr xStart, yStart) == -1)
+			{
+				return -1;
+			}
+			else return 1 + CountRoad(xCurr, yCurr, xCurr-1, yCurr, xStart, yStart);
+		}
+	}
+			
+}
+
+void Board::CheckCompletedRoad(xPos, yPos)
 {
 	Tile tile = board[xPos][yPos];
-	bool completed = false;
-	int points = 0;
-	
-	//position ints for the start and end of the road (for scoring)
-	int xEnd1 = -1;
-	int yEnd1 = -1;
-	int xEnd2 = -1;
-	int yEnd2 = -1;
+	int pointsN = 0;
+	int pointsS = 0;
+	int pointsE = 0;
+	int pointsW = 0;
 	
 	
 	//Call every time a tile is placed to see if a road is completed for
@@ -168,16 +247,88 @@ bool Board::CheckCompletedRoad(xPos, yPos)
 		++roadCount;
 	}
 	
-	//Check if center of tile is an end of the road
-	if(roadCount > 0 && tile.center != 0)
+	//Check there are any roads on tile
+	if(roadCount == 0)
 	{
-		points++;
-		xEnd1 = xPos;
-		yEnd1 = yPos;
+		return false;
+	}
+	else
+	{
+		for(int i = 0; i < roadcount; ++i)	//search in every direction for completed road
+		{									//can be up to 4 roads from an intersection
+											//and 2 if starting from the middle of the road
+			if(roadN)
+			{
+				pointsN = 1 + CountRoad(xPos, yPos, xPos, yPos-1, xPos, yPos);
+				roadN = false;		//set to false so next loop iteration doesn't
+									//just redo the search in this direction
+			}
+			if(roadS)
+			{
+				pointsS = 1 + CountRoad(xPos, yPos, xPos, yPos+1, xPos, yPos);
+				roadS = false;
+			}
+			if(roadE)
+			{
+				pointsE = 1 + CountRoad(xPos+1, yPos, xPos, yPos, xPos, yPos);
+				roadE = false;
+			}
+			if(roadW)
+			{
+				pointsW = 1 + CountRoad(xPos-1, yPos, xPos, yPos, xPos, yPos);
+				roadW = false;
+			}
+		}
 		
-		if(roadcount == 1)
-		{
+		if(tile.center != 0)	//check if center of tile is an end of a road
+		{					//check for any completed roads (all would be separate)
+			if(pointsN != 0)
+			{
+				//Need a function to settle meeple displutes
+				// and to return which player(s) recieve the points
+				
+				//Player.score += pointsN
+			}
+			if(pointsS != 0)
+			{
+				
+			}
+			if(pointsE != 0)
+			{
+				
+			}
+			if(pointsW != 0)
+			{
+				
+			}
 			
+		}
+		else		//if road doesnt end in center, there must only be 2 roads
+		{			//and we are in the middle of the road. Add scores into 1
+			int points == 0;
+			if(pointsN != 0)
+			{
+				//Need a function to settle meeple displutes
+				// and to return which player(s) recieve the points
+				points += pointsN;
+			}
+			if(pointsS != 0)
+			{
+				points += pointsS;
+			}
+			if(pointsE != 0)
+			{
+				points += pointsE;
+			}
+			if(pointsW != 0)
+			{
+				points += pointsE;
+			}
+			
+			if(points != 0)
+			{
+				//player.score += points
+			}
 		}
 	}
 	

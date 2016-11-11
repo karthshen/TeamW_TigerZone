@@ -11,8 +11,8 @@ private:
 
 	
 	// places current tile at location specified by x,y with r rotations
-	void placeTile(int x int y int r) {
-		Board::PlaceTile(x, y, r)
+	void placeTile(const Tile& tile, int x, int y) {
+		Board::PlaceTile(tile x, y, r)
 	}
 	
 	void placeMeeple(meeple, board) {

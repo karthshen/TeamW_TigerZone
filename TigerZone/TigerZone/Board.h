@@ -1,31 +1,37 @@
 #include <iostream>
 
-#include "Tiles.h"
+#include "Tile.h"
 #include "Players.h"
 #include "Gamebase.h"
 
 using namespace std;
 
-class GameBoard
+class Board
 {
-    
-	void PlaceStartTile();
-	void CheckTilePlacement(const Tile& tile, int xPos, int yPos);
-	void CheckMeeplePlacement(const Tile& tile, xPos, yPos, meepleSpot);
-	void CheckCompletedCity(xPos,yPos);
-	void CheckCompletedRoad(xPos, yPos);
-	void CheckSurroundedBuilding(xPos, yPos);
-	
+private:
+	Tile deck[72];
+	Tile* board;
+	Tile startTile;
+
+	int PlaceStartTile();
+	int CheckTilePlacement(const Tile& tile, int xPos, int yPos);
+	int CheckMeeplePlacement(int xPos, int yPos, String meepleStr);
+	int CheckCompletedCity(xPos,yPos);
+	int CheckCompletedRoad(xPos, yPos);
+	int CheckCompletedDen(xPos, yPos);
 	
 public:
 
 	Board();
 	~Board();
 
-    void DisplayBoard();
-	void PlaceTile(const Tile& tile, int xPos, int yPos);
-	void CheckAvailibleSpots(const Tile& tile);
-	void ShowAvailibleMeepleSpots();
+    int DisplayBoard();
+	int PlaceTile(const Tile& tile, int xPos, int yPos);
+	int CheckAvailibleSpots(const Tile& tile);
+	int ShowAvailibleMeepleSpots();
 	int CountEndGameScore(int playerNumber);
+	
+	
+	int MakeDeck();
 	
 };

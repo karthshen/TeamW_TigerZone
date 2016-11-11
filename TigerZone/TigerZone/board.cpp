@@ -24,6 +24,11 @@ int Board::CheckTilePlacement(const Tile& tile, int xPos, int yPos)
 	//check if sides match up to adjacent sides
 }
 
+struct coordinate{
+	int x;
+	int y;
+};
+
 // return value: 0=invalid meeple placement
 // 				 1=valid meeple placement
 int Board::CheckMeeplePlacement(int xPos, int yPos, String meepleSpot)
@@ -67,19 +72,182 @@ int Board::CheckMeeplePlacement(int xPos, int yPos, String meepleSpot)
 			break;
 	}
 
-	// // array to check if tile has been visited
-	// // values: 0=no tile; 
-	// // 		   1=tile present, not visited
-	// // 		   2=tile present, visited
-	// int visited[143][143];
+	// starting tile
+	Tile* root = board[xPos][yPos];
+	// get the terrain type
+	int terrainType = 0;
+	if(meapleN != 0){
+		terrainType = root.sideN;
+	}
+	else if(meapleS != 0){
+		terrainType = root.sideS;
+	}
+	else if(meapleW != 0){
+		terrainType = root.sideW;
+	}
+	else if(meapleE != 0){
+		terrainType = root.sideE;
+	}
 
-	// // check if tiles are present at each board spot
-	// for(int i=0; i<143; i++){
-	// 	for(int j=0; j<143; j++){
-	// 		if(board[i][j] != NULL)
-	// 			visited[i][j] = 1; // tile present
-	// 	}
-	// }
+	// queue of coordinates for BFS
+	queue<coordinate> Q;
+	
+	if(meapleN != 0 || (center == terrainType && root.sideN == terrainType)){
+		if(board[xPos][yPos+1] != NULL){
+			Tile* adjacent = board[xPos][yPos+1];
+			if(adjacent.sideS == terrainType){
+				if(adjacent.meapleS != 0){
+					return 0;
+				}
+				else{
+					struct coordinate c;
+					c.x = xPos;
+					c.y = yPos+1;
+					Q.push(c);
+				}
+			}
+		}
+	}
+	if(meapleS != 0 || (center == terrainType && root.sideS == terrainType)){
+		if(board[xPos][yPos-1] != NULL){
+			Tile* adjacent = board[xPos][yPos-1];
+			if(adjacent.sideN == terrainType){
+				if(adjacent.meapleN != 0){
+					return 0;
+				}
+				else{
+					struct coordinate c;
+					c.x = xPos;
+					c.y = yPos-1;
+					Q.push(c);
+				}
+			}
+		}
+	}
+	if(meapleW != 0 || (center == terrainType && root.sideW == terrainType)){
+		if(board[xPos-1][yPos] != NULL){
+			Tile* adjacent = board[xPos-1][yPos];
+			if(adjacent.sideE == terrainType){
+				if(adjacent.meapleE != 0){
+					return 0;
+				}
+				else{
+					struct coordinate c;
+					c.x = xPos-1;
+					c.y = yPos;
+					Q.push(c);
+				}
+			}
+		}
+	}
+	if(meapleE != 0 || (center == terrainType && root.sideE == terrainType)){
+		if(board[xPos+1][yPos] != NULL){
+			Tile* adjacent = board[xPos+1][yPos];
+			if(adjacent.sideW == terrainType){
+				if(adjacent.meapleW != 0){
+					return 0;
+				}
+				else{
+					struct coordinate c;
+					c.x = xPos+1;
+					c.y = yPos;
+					Q.push(c);
+				}
+			}
+		}
+	}
+
+	while(!Q.empty()){
+		struct coordinate c = Q.pop();
+		Tile* current = board[c.x][c.y];
+		// if the search cycles back to the root
+		if(current == root)
+			return 1;
+		if(current.center == terrainType){
+			if(current.sideN == terrainType){
+				if(current.meapleN != 0){
+					return 0;
+				}
+				if(board[xPos][yPos+1] != NULL){
+					Tile* adjacent = board[xPos][yPos+1];
+					else if(adjacent.sideS == terrainType){
+						if(adjacent.meapleS != 0){
+							return 0;
+						}
+						else{
+							struct coordinate c;
+							c.x = xPos;
+							c.y = yPos+1;
+							Q.push(c);
+						}
+					}
+				}
+			}
+			if(current.sideS == terrainType){
+				if(current.meapleS != 0){
+					return 0;
+				}
+				if(board[xPos][yPos-1] != NULL){
+					Tile* adjacent = board[xPos][yPos-1];
+					else if(adjacent.sideN == terrainType){
+						if(adjacent.meapleN != 0){
+							return 0;
+						}
+						else{
+							struct coordinate c;
+							c.x = xPos;
+							c.y = yPos-1;
+							Q.push(c);
+						}
+					}
+				}
+			}
+			if(current.sideW == terrainType){
+				if(current.meapleW != 0){
+					return 0;
+				}
+				if(board[xPos-1][yPos] != NULL){
+					Tile* adjacent = board[xPos-1][yPos];
+					else if(adjacent.sideE == terrainType){
+						if(adjacent.meapleE != 0){
+							return 0;
+						}
+						else{
+							struct coordinate c;
+							c.x = xPos-1;
+							c.y = yPos;
+							Q.push(c);
+						}
+					}
+				}
+			}
+			if(current.sideE == terrainType){
+				if(current.meapleE != 0){
+					return 0;
+				}
+				if(board[xPos+1][yPos] != NULL){
+					Tile* adjacent = board[xPos+1][yPos];
+					else if(adjacent.sideW == terrainType){
+						if(adjacent.meapleW != 0){
+							return 0;
+						}
+						else{
+							struct coordinate c;
+							c.x = xPos+1;
+							c.y = yPos;
+							Q.push(c);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	// if function has not returned by now, meeple may be placed
+	// place meeple
+	root.PlaceMeaple(meepleSpot);
+
+	return 1;
 }
 
 // return value: 0=no newly completed cities

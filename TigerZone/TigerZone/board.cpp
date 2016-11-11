@@ -113,7 +113,7 @@ void Board::CheckMeeplePlacement(const Tile& tile, xPos, yPos, meepleSpot)
 	// terrain as the proposed meepleSpot
 }
 
-void Board::CheckCompletedCity(xPos,yPos)
+void Board::CheckCompletedCity(int xPos,int yPos)
 {
 	//call every time a tile is placed to see if a city is completed for
 	// scoring
@@ -126,7 +126,7 @@ void Board::CheckCompletedCity(xPos,yPos)
 	//return meeples and add to score of corresponding player
 }
 
-int Board::CountRoad(xPrev, yPrev, xCurr, yCurr, xStart, yStart)
+int Board::CountRoad(int xPrev, int yPrev, int xCurr, int yCurr, int xStart, int yStart)
 {
 	if(board[xCurr][yCurr] == null)		//If no tile placed, road is not complete
 	{
@@ -208,7 +208,7 @@ int Board::CountRoad(xPrev, yPrev, xCurr, yCurr, xStart, yStart)
 			
 }
 
-void Board::CheckCompletedRoad(xPos, yPos)
+void Board::CheckCompletedRoad(int xPos, int yPos)
 {
 	Tile tile = board[xPos][yPos];
 	int pointsN = 0;
@@ -341,7 +341,7 @@ void Board::CheckCompletedRoad(xPos, yPos)
 	//return meeples and add to score for corresponding player
 }
 
-void Board::CheckSurroundedBuilding(xPos, yPos)
+void Board::CheckSurroundedBuilding(int xPos, int yPos)
 {
 	//check if there are any buildings within one spot of the newly placed
 	// tile
